@@ -1,4 +1,5 @@
-import { getCollection } from 'astro:content'
+import { getCollection } from 'astro:content';
+import { isBefore, parseISO } from "date-fns";
 
 export const getCategories = async () => {
 	const posts = await getCollection('blog')
@@ -9,6 +10,7 @@ export const getCategories = async () => {
 export const getPosts = async (max?: number) => {
 	return (await getCollection('blog'))
 		.filter((post) => !post.data.draft)
+		.filter((post) => isBefore(post.data.pubDate.valueOf(), new Date()))
 		.sort((a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf())
 		.slice(0, max)
 }
